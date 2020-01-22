@@ -12,3 +12,7 @@
 1. README.md
 
 ## How to Run Code
+
+## References 
+
+* [Generating N-Grams](http://www.albertauyeung.com/post/generating-ngrams-python/)
