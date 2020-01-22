@@ -17,11 +17,11 @@ import sys
 # TOKENS holds the dictionary of all tokens in test data and 
 # number of times they appear { token: numAppearances }
 #
-# DELETED_KEYS is a list of all UNK keys
+# DELETED_KEYS is a dictionary of all UNK keys { key : value }
 # ----------------------------
 
 TOKENS = {}
-DELETED_KEYS = [] 
+DELETED_KEYS = []
 
 # ----------------------------
 # getTrainingData() will prefill TOKENS and DELETED_KEYS to be 
@@ -63,14 +63,20 @@ def getTrainingData(type):
 # replace all UNK tokens  
 # ----------------------------
 
-def getDevData():
+def getDevData(type):
 	print("getting dev data")
 
 	devData = open("./data/1b_benchmark.dev.tokens", "r")
 	for line in devData:
 		wordArray = line.split()
-		wordArray.insert(0, "<start>")
+		if(type != "unigram"):
+			wordArray.insert(0, "<start>")
 		wordArray.append("<end>")
+
+		for word in wordArray:
+			if (word is in DELETED_KEYS):
+				wordArray[wordArray.index(word)] = "UNK"
+		print(wordArray)
 		
 	devData.close()
 
@@ -84,7 +90,7 @@ def getDevData():
 def main():
 	print("in main")
 	getTrainingData(sys.argv[1])
-	# getDevData()
+	getDevData(sys.argv[1])
 	# testActualData()
 
 if __name__ == "__main__":
