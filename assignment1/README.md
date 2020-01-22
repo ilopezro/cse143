@@ -1,5 +1,5 @@
 # CSE 143 - Assignment 1
----
+
 ## Table of Contents
 1. assg1.py
 	* Contains main code 
@@ -10,5 +10,5 @@
 	* README.md
 	* subsample_1b_benchmark.sh
 1. README.md
----
+
 ## How to Run Code
