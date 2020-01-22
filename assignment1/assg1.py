@@ -7,37 +7,41 @@
 # ilopezro
 #
 # Homework Partners:
-# Jennifer Dutra and ()
+# Jennifer Dutra and Khang Tran
 # ----------------------------
 
-trainingData = open("./data/1b_benchmark.train.tokens", "r")
-tokens = {}
+def getNGrams():
+	trainingData = open("./data/1b_benchmark.train.tokens", "r")
+	tokens = {}
 
-i = 0
+	for line in trainingData:
+		wordArray = line.split()
+		wordArray.insert(0, "<start>")
+		wordArray.append("<end>")
+		for word in wordArray:
+			if word not in tokens:
+				tokens[word] = 1
+			else:
+				nextVal = tokens[word] + 1
+				tokens[word] = nextVal
+		del tokens["<start>"]
 
-for line in trainingData:
-	wordArray = line.split()
-	wordArray.insert(0, "<start>")
-	wordArray.append("<end>")
-	for word in wordArray:
-		if word not in tokens:
-			tokens[word] = 1
-		else:
-			nextVal = tokens[word] + 1
-			tokens[word] = nextVal
-	del tokens["<start>"]
+	unkCounter = 0
+	keysToDelete = []
 
-unkCounter = 0
-keysToDelete = []
+	for key, value in tokens.items():
+		if value < 3:
+			unkCounter += 1
+			keysToDelete.append(key)
 
-for key, value in tokens.items():
-	if value < 3:
-		unkCounter += 1
-		keysToDelete.append(key)
+	for key in keysToDelete:
+		del tokens[key]
 
-for key in keysToDelete:
-	del tokens[key]
+	tokens["UNK"] = unkCounter
+	print(len(tokens))
 
-tokens["UNK"] = unkCounter
+def main():
+	print("in main")
 
-print(len(tokens))
+if __name__ == "__main__":
+	main()
