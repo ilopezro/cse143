@@ -10,6 +10,8 @@
 # Jennifer Dutra and Khang Tran
 # ----------------------------
 
+import sys
+
 # ----------------------------
 # Global Variables
 # TOKENS holds the dictionary of all tokens in test data and 
@@ -19,7 +21,6 @@
 # ----------------------------
 
 TOKENS = {}
-DEV_TOKENS = {}
 DELETED_KEYS = [] 
 
 # ----------------------------
@@ -27,7 +28,7 @@ DELETED_KEYS = []
 # used in Dev data. 
 # ----------------------------
 
-def getTrainingData():
+def getTrainingData(type):
 	print("getting training data")
 	trainingData = open("./data/1b_benchmark.train.tokens", "r")
 
@@ -41,8 +42,8 @@ def getTrainingData():
 			else:
 				nextVal = TOKENS[word] + 1
 				TOKENS[word] = nextVal
-
-		del TOKENS["<start>"]
+		if type == "unigram":
+			del TOKENS["<start>"]
 
 	unkCounter = 0
 
@@ -82,7 +83,7 @@ def getDevData():
 
 def main():
 	print("in main")
-	getTrainingData()
+	getTrainingData(sys.argv[1])
 	# getDevData()
 	# testActualData()
 
