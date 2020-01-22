@@ -10,38 +10,69 @@
 # Jennifer Dutra and Khang Tran
 # ----------------------------
 
-def getNGrams():
+# Global Variables
+# TOKENS holds the dictionary of all tokens in test data and 
+# number of times they appear { token: numAppearances }
+#
+# DELETED_KEYS is a list of all UNK keys
+
+TOKENS = {}
+DELETED_KEYS = [] 
+
+# getTrainingData() will prefill TOKENS and DELETED_KEYS to be 
+# used in Dev data. 
+
+def getTrainingData():
 	trainingData = open("./data/1b_benchmark.train.tokens", "r")
-	tokens = {}
 
 	for line in trainingData:
 		wordArray = line.split()
 		wordArray.insert(0, "<start>")
 		wordArray.append("<end>")
 		for word in wordArray:
-			if word not in tokens:
-				tokens[word] = 1
+			if word not in TOKENS:
+				TOKENS[word] = 1
 			else:
-				nextVal = tokens[word] + 1
-				tokens[word] = nextVal
-		del tokens["<start>"]
+				nextVal = TOKENS[word] + 1
+				TOKENS[word] = nextVal
+		del TOKENS["<start>"]
 
 	unkCounter = 0
-	keysToDelete = []
 
-	for key, value in tokens.items():
+	for key, value in TOKENS.items():
 		if value < 3:
-			unkCounter += 1
-			keysToDelete.append(key)
+			unkCounter += TOKENS[key]
+			DELETED_KEYS.append(key)
 
-	for key in keysToDelete:
-		del tokens[key]
+	for key in DELETED_KEYS:
+		del TOKENS[key]
 
-	tokens["UNK"] = unkCounter
-	print(len(tokens))
+	TOKENS["UNK"] = unkCounter
+	trainingData.close()
+
+# getDevData() will deal with Dev tokens and will parse through to 
+# replace all UNK tokens  
+
+def getDevData():
+	devData = open("./data/1b_benchmark.dev.tokens", "r")
+
+	for line in devData:
+		wordArray = line.split()
+		wordArray.insert(0, "<start>")
+		wordArray.append("<end>")
+
+		for word in wordArray:
+			for key in DELETED_KEYS:
+				if word == key:
+					index = wordArray.index(key)
+					wordArray[index] = "UNK"
+	devData.close()
+
 
 def main():
 	print("in main")
+	getTrainingData()
+	getDevData()
 
 if __name__ == "__main__":
 	main()
