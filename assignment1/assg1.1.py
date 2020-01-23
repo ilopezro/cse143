@@ -12,6 +12,7 @@ def trainData():
         wordArray = line.split()
         wordArray.append("<end>")
         for word in wordArray:
+            word.lower()
             if word not in TRAINING_TOKENS:
                 TRAINING_TOKENS[word] = 1
             else:
@@ -45,15 +46,14 @@ def getDevData():
     devData.close()
 
 def getUnigram():
+    # calculate probability
     totalProbability = sum(TRAINING_TOKENS.values())
-    for line in DEV_DATA_ARRAY:
-        wordArray = line.split()
-        wordArray.remove("<start>")
-        for word in wordArray:
-            if word in TRAINING_TOKENS:
-                N_GRAMS[word] = TRAINING_TOKENS[word] / totalProbability
+    for key, value in TRAINING_TOKENS.items():
+        N_GRAMS[key] = TRAINING_TOKENS[key] / totalProbability 
+    print("probability ",sum(N_GRAMS.values()))
     
-    print(sum(N_GRAMS.values()))
+    # calculate perplexity
+    
 
 def getBigram():
     print("getting bigram")
