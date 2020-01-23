@@ -37,12 +37,11 @@ def getDevData():
     for line in devData:
         wordArray = line.split()
         for word in wordArray:
-            if word in setDelKeys:
+            if word not in TRAINING_TOKENS:
                 wordArray[wordArray.index(word)] = "UNK"
         wordArray.insert(0, "<start>")
         wordArray.append("<end>")
         DEV_DATA_ARRAY.append(" ".join(wordArray))
-    
     devData.close()
 
 def getUnigram():
@@ -52,15 +51,9 @@ def getUnigram():
         wordArray.remove("<start>")
         for word in wordArray:
             if word in TRAINING_TOKENS:
-                N_GRAMS[word] = TRAINING_TOKENS[word] / len(TRAINING_TOKENS.keys())
-            else:
-                if word not in N_GRAMS:
-                    N_GRAMS[word] = 1 / len(TRAINING_TOKENS.keys())
-                else:
-                    numWords = N_GRAMS[word] * len(TRAINING_TOKENS.keys())
-                    numWords += 1
-                    print(numWords)
-                    N_GRAMS[word] = numWords / len(TRAINING_TOKENS.keys())
+                N_GRAMS[word] = TRAINING_TOKENS[word] / totalProbability
+    
+    print(sum(N_GRAMS.values()))
 
 def getBigram():
     print("getting bigram")
