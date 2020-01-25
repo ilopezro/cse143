@@ -96,12 +96,15 @@ def getBigramPerplexity(data, probabilites, helperProbabilities):
 # getBigramProbability() gets bigram probability
 # --------------------------------------------------------------------
 def getBigramProbability(bigram, probabilites, helperProbabilities):
-	probabilityOfBigram = probabilites[bigram]
-	if bigram[0] == "<start>":
-		probabilityOfHistory = 1
-	else: 
-		probabilityOfHistory = helperProbabilities[bigram[0]]
-	return float(probabilityOfBigram)/float(probabilityOfHistory)
+	try:
+		probabilityOfBigram = probabilites[bigram]
+		if bigram[0] == "<start>":
+			probabilityOfHistory = 1
+		else: 
+			probabilityOfHistory = helperProbabilities[bigram[0]]
+		return float(probabilityOfBigram)/float(probabilityOfHistory)
+	except:
+		return 0
 
 # --------------------------------------------------------------------
 # getTrigramPerplexity() calculates perplexity for trigrams and 
@@ -127,12 +130,43 @@ def getTrigramPerplexity(data, probabilites, helperProbabilities):
 # getTrigramProbability() gets trigram probability
 # --------------------------------------------------------------------
 def getTrigramProbability(trigram, probabilites, helperProbabilities):
-	probabilityOfTrigram = probabilites[trigram]
-	if trigram[0] == "<start>":
-		probabilityOfHistory = 1
-	else: 
-		probabilityOfHistory = helperProbabilities[trigram[0:2]]
-	return float(probabilityOfTrigram)/float(probabilityOfHistory)
+	try: 
+		probabilityOfTrigram = probabilites[trigram]
+		if trigram[0] == "<start>":
+			probabilityOfHistory = 1
+		else: 
+			probabilityOfHistory = helperProbabilities[trigram[0:2]]
+		return float(probabilityOfTrigram)/float(probabilityOfHistory)
+	except:
+		return 0
+			
+
+# --------------------------------------------------------------------
+# getTrigramSmoothing()) gets trigram perplexity using smoothing
+# --------------------------------------------------------------------
+def getTrigramSmoothing(data, probabilities, helperProbabilities, unigramCount, lambdas):
+	runningSum = 0
+	biggerRunningSum = 0
+	sentenceLength = 0
+	for sentence in data:
+		sentenceArray = sentence.split()
+		ngram = [(sentenceArray[i], sentenceArray[i+1], sentenceArray[i+2]) for i in range(len(sentenceArray)-2)]
+		for gram in ngram:
+			runningMiniSum = 0
+			runningMiniSum += lambdas[2] * (getTrigramProbability(gram, probabilities, helperProbabilities))
+			runningMiniSum += lambdas[1] * (getBigramProbability(gram[0:2], helperProbabilities, unigramCount))
+			if gram[0] == "<start>":
+				numerator = 1
+			else:
+				numerator = unigramCount[gram[0]]
+			runningMiniSum += lambdas[0] * float(numerator/sum(unigramCount.values()))
+			runningSum += math.log(runningMiniSum, 2)
+		biggerRunningSum += runningSum
+		runningSum = 0
+		sentenceLength += len(sentenceArray) - 1
+	inverse = float(-1) / float(sentenceLength)
+	exponent = inverse * biggerRunningSum; 
+	return math.pow(2, exponent)
 
 # --------------------------------------------------------------------
 # getData() replaces every UNK token and adds it to DEV_DATA_ARRAY
@@ -156,17 +190,6 @@ def getData(count, array, type):
 	data.close()
 
 # --------------------------------------------------------------------
-# addStartToken() prepares DATA_ARRAY to be used by Bigram and 
-# Trigram models by adding the start token
-# --------------------------------------------------------------------
-def addStartToken(data):
-	for sentence in data:
-		index = data.index(sentence)
-		sentenceArray = sentence.split()
-		sentenceArray.insert(0, "<start>")
-		data[index] = " ".join(sentenceArray)
-
-# --------------------------------------------------------------------
 # getNgrams() gets all n-grams available from data num >= 2
 # --------------------------------------------------------------------
 def getNgrams(data, count, num):
@@ -181,3 +204,4 @@ def getNgrams(data, count, num):
 				count[gram] = 1
 			else:
 				count[gram] += 1
+
