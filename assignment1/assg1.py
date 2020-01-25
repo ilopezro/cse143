@@ -10,88 +10,123 @@
 # Jennifer Dutra and Khang Tran
 # ----------------------------
 
-import sys
+import sys, math
 
 # ----------------------------
 # Global Variables
-# TOKENS holds the dictionary of all tokens in test data and 
+#
+# UNIGRAMS_COUNT holds the dictionary of all tokens in test data and 
 # number of times they appear { token: numAppearances }
 #
-# DELETED_KEYS is a dictionary of all UNK keys { key : value }
+# UNIGRAMS_PROBABILITIES holds the probabilities of the unigrams 
+#
+# DELETED_KEYS is a list of all UNK keys
+# 
+# UNIGRAM_TRAINING_DATA holds a list of all the sentences for unigram
+#
+# DEV_DATA_ARRAY holds a list of all sentences from dev data
 # ----------------------------
 
-TOKENS = {}
+UNIGRAMS_COUNT = {}
+UNIGRAMS_PROBABILITIES = {}
 DELETED_KEYS = []
+UNIGRAM_TRAINING_DATA = []
+DEV_DATA_ARRAY = []
 
 # ----------------------------
-# getTrainingData() will prefill TOKENS and DELETED_KEYS to be 
+# getUnigrams() will prefill UNIGRAMS and DELETED_KEYS to be 
 # used in Dev data. 
 # ----------------------------
 
-def getTrainingData(type):
-	print("getting training data")
-	trainingData = open("./data/1b_benchmark.train.tokens", "r")
+def getUnigrams():
+	trainingFile = open("./data/1b_benchmark.train.tokens", "r")
 
-	for line in trainingData:
-		wordArray = line.split()
-		wordArray.insert(0, "<start>")
-		wordArray.append("<end>")
-		for word in wordArray:
-			if word not in TOKENS:
-				TOKENS[word] = 1
+	for sentence in trainingFile:
+		sentenceArray = sentence.split()
+		sentenceArray.append("<end>")
+		for word in sentenceArray:
+			if word not in UNIGRAMS_COUNT:
+				UNIGRAMS_COUNT[word] = 1
 			else:
-				nextVal = TOKENS[word] + 1
-				TOKENS[word] = nextVal
-		if type == "unigram":
-			del TOKENS["<start>"]
+				UNIGRAMS_COUNT[word] += 1
+		UNIGRAM_TRAINING_DATA.append(" ".join(sentenceArray))
+	trainingFile.close()
 
-	unkCounter = 0
+	UNIGRAMS_COUNT["UNK"] = 0
 
-	for key, value in TOKENS.items():
+	for key, value in UNIGRAMS_COUNT.items():
 		if value < 3:
-			unkCounter += TOKENS[key]
 			DELETED_KEYS.append(key)
-
+			UNIGRAMS_COUNT["UNK"] += value
+	
 	for key in DELETED_KEYS:
-		del TOKENS[key]
+		del UNIGRAMS_COUNT[key]
 
-	TOKENS["UNK"] = unkCounter
-	trainingData.close()
+	trainingFile.close()
 
 # ----------------------------
-# getDevData() will deal with Dev tokens and will parse through to 
-# replace all UNK tokens  
+# populateUnks() populats unknown tokens with 
+# UNKs in the given sentence list
 # ----------------------------
 
-def getDevData(type):
-	print("getting dev data")
+def populateUnk(data):
+	for sentence in data:
+		index = data.index(sentence)
+		sentenceArray = sentence.split()
+		for word in sentenceArray:
+			if word not in UNIGRAMS_COUNT:
+				sentenceArray[sentenceArray.index(word)] = "UNK"
+		data[index] = " ".join(sentenceArray)
 
+# ----------------------------
+# getUnigramProbability() populates UNIGRAM_PROBABILITY 
+# with all the probabilites within Unigram 
+# ----------------------------
+def getUnigramProbability():
+	for key, value in UNIGRAMS_COUNT.items():
+		UNIGRAMS_PROBABILITIES[key] = value/sum(UNIGRAMS_COUNT.values())
+
+def getUnigramPerplexity(data):
+	runningSum = 0
+	biggerRunningSum = 0
+	wordCount = 0
+	for sentence in data:
+		sentenceArray = sentence.split()
+		for word in sentenceArray:
+			wordCount += 1
+			runningSum += math.log(UNIGRAMS_PROBABILITIES[word], 2)
+		biggerRunningSum += runningSum
+		runningSum = 0
+	inverse = float(-1) / float(wordCount)
+	exponent = inverse * biggerRunningSum; 
+	return math.pow(2, exponent)
+
+# ----------------------------
+# Starting Dev Manipulation for Unigram
+# ----------------------------
+
+def getDevData():
 	devData = open("./data/1b_benchmark.dev.tokens", "r")
-	for line in devData:
-		wordArray = line.split()
-		if(type != "unigram"):
-			wordArray.insert(0, "<start>")
-		wordArray.append("<end>")
-
-		for word in wordArray:
-			if (word is in DELETED_KEYS):
-				wordArray[wordArray.index(word)] = "UNK"
-		print(wordArray)
-		
+	for sentence in devData:
+		sentenceArray = sentence.split()
+		for word in sentenceArray:
+			if word not in UNIGRAMS_COUNT:
+				sentenceArray[sentenceArray.index(word)] = "UNK"
+		sentenceArray.append("<end>")
+		DEV_DATA_ARRAY.append(" ".join(sentenceArray))
 	devData.close()
 
-# ----------------------------
-# testActualData() will use the training data to compute probabilities 
-# and preplexities of Unigram, Bigram, and Trigram models
-# ----------------------------
-
-# def testActualData(): 
-
-def main():
-	print("in main")
-	getTrainingData(sys.argv[1])
-	getDevData(sys.argv[1])
-	# testActualData()
-
 if __name__ == "__main__":
-	main()
+	print("Getting Unigrams Set Up")
+	getUnigrams()
+	print("Populating Training Data with UNKs")
+	populateUnk(UNIGRAM_TRAINING_DATA)
+	print("Calculating Probabilities for all Unigram Tokens")
+	getUnigramProbability()
+	print("Calculating Perplexity for Training Data")
+	print(f"Perplexity of Training Data for Unigram is: {getUnigramPerplexity(UNIGRAM_TRAINING_DATA)}")
+
+	print("Getting Dev Data Set Up")
+	getDevData()
+	print("Calculating Perplexity for Dev Data")
+	print(f"Perplexity of Dev Data for Unigram is: {getUnigramPerplexity(DEV_DATA_ARRAY)}")
