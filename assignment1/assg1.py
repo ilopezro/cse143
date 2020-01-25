@@ -11,7 +11,7 @@
 # --------------------------------------------------------------------
 
 import math
-from helperFunctions import getUnigrams, populateUnk, getUnigramPerplexity, getProbability, getData, addStartToken, getNgrams, getBigramPerplexity, getTrigramPerplexity
+from helperFunctions import getUnigrams, populateUnk, getUnigramPerplexity, getProbability, getData, getNgrams, getBigramPerplexity, getTrigramPerplexity, getTrigramSmoothing
 
 # --------------------------------------------------------------------
 # Variables
@@ -101,12 +101,17 @@ if __name__ == "__main__":
 	print(f"Perplexity of Training Data for Trigram is: {getTrigramPerplexity(trainingData, trigramCount, bigramCount)}\n")
 
 	print("Getting Dev Data Set Up")
-	print("Calculating Perplexity for Dev Data")
+	print("Calculating Perplexity for Dev Data No Smoothing")
 	try:
 		print(f"Perplexity of Dev Data for Unigram is: {getTrigramPerplexity(devData, trigramCount, bigramCount)}\n")
 	except:
 		print(f"Perplexity of Dev Data for Unigram is: {math.inf}\n")
+	print("Calculating Perplexity for Dev Data Using SMOOTHING")
+	lambdas=[.3, .3, .4]
+	print(f"Perplexity using smoothing with lambda1: {lambdas[0]}, lambda2: {lambdas[1]}, and lambda3: {lambdas[2]}, is: {getTrigramSmoothing(devData, trigramCount, bigramCount, unigramCount, lambdas)}")
 
 	# print("Getting Test Data")
-	# print("Calculating Perplexity for Test Data")
+	# print("Calculating Perplexity for Test Data No Smoothing")
 	# print(f"Perplexity of Test Data for Trigram is: {getPerplexity(testData, trigramCount, bigramCount)}\n")
+	# print("Calculating Perplexity for Test Data Using SMOOTHING")
+	# getTrigramSmoothing()
