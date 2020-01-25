@@ -30,19 +30,6 @@ def getUnigrams(count, delKeys):
 	trainingFile.close()
 
 # --------------------------------------------------------------------
-# populateUnks() populats unknown tokens with UNKs in the given 
-# sentence list
-# --------------------------------------------------------------------
-def populateUnk(data, model):
-	for sentence in data:
-		index = data.index(sentence)
-		sentenceArray = sentence.split()
-		for word in sentenceArray:
-			if word not in model:
-				sentenceArray[sentenceArray.index(word)] = "UNK"
-		data[index] = " ".join(sentenceArray)
-
-# --------------------------------------------------------------------
 # getUnigramProbability() populates UNIGRAM_PROBABILITY with all the 
 # probabilites within Unigram 
 # --------------------------------------------------------------------

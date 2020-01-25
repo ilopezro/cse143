@@ -11,7 +11,7 @@
 # --------------------------------------------------------------------
 
 import math
-from helperFunctions import getUnigrams, populateUnk, getUnigramPerplexity, getProbability, getData, getNgrams, getBigramPerplexity, getTrigramPerplexity, getTrigramSmoothing
+from helperFunctions import getUnigrams, getUnigramPerplexity, getProbability, getData, getNgrams, getBigramPerplexity, getTrigramPerplexity, getTrigramSmoothing
 
 # --------------------------------------------------------------------
 # Variables
