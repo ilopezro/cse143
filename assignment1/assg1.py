@@ -10,7 +10,6 @@
 # Jennifer Dutra and Khang Tran
 # --------------------------------------------------------------------
 
-import sys, math
 from helperFunctions import getUnigrams, populateUnk, getPerplexity, getProbability, getDevData
 
 # --------------------------------------------------------------------
@@ -36,6 +35,8 @@ from helperFunctions import getUnigrams, populateUnk, getPerplexity, getProbabil
 # --------------------------------------------------------------------
 # getBigrams() prepares gets all bigrams available from trainingData
 # --------------------------------------------------------------------
+def getBigrams(data):
+	print("in here")
 
 if __name__ == "__main__":
 	unigramCount = {}
