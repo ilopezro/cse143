@@ -11,7 +11,7 @@
 # --------------------------------------------------------------------
 
 import math
-from helperFunctions import getUnigrams, populateUnk, getPerplexity, getProbability, getData, addStartToken, getNgrams
+from helperFunctions import getUnigrams, populateUnk, getUnigramPerplexity, getProbability, getData, addStartToken, getNgrams, getBigramPerplexity
 
 # --------------------------------------------------------------------
 # Variables
@@ -34,12 +34,11 @@ from helperFunctions import getUnigrams, populateUnk, getPerplexity, getProbabil
 # --------------------------------------------------------------------
 
 if __name__ == "__main__":
+
 	unigramCount = {}
 	unigramProbabilities = {}
 	bigramCount = {}
-	bigramProbabilities = {}
 	trigramCount = {}
-	trigramProbabilities = {}
 	deletedKeys = []
 	trainingData = []
 	devData = []
@@ -49,24 +48,23 @@ if __name__ == "__main__":
 	print("Unigrams")
 	print("-------------------------------------------------------------")
 	print("Getting Unigram Data")
-	getData(trainingData)
-	getUnigrams(unigramCount, trainingData, deletedKeys)
+	getUnigrams(unigramCount, deletedKeys)
 	print("Populating Training Data with UNKs")
-	populateUnk(trainingData, unigramCount)
+	getData(unigramCount, trainingData, type="train")
 	print("Calculating Probabilities for all Unigram Tokens")
 	getProbability(unigramCount, unigramProbabilities)
 	print("Calculating Perplexity for Training Data")
-	print(f"Perplexity of Training Data for Unigram is: {getPerplexity(trainingData, unigramProbabilities)}\n")
+	print(f"Perplexity of Training Data for Unigram is: {getUnigramPerplexity(trainingData, unigramProbabilities)}\n")
 
 	print("Getting Dev Data Set Up")
-	getData(unigramCount, devData, isTest=False)
+	getData(unigramCount, devData, type="dev")
 	print("Calculating Perplexity for Dev Data")
-	print(f"Perplexity of Dev Data for Unigram is: {getPerplexity(devData, unigramProbabilities)}\n")
+	print(f"Perplexity of Dev Data for Unigram is: {getUnigramPerplexity(devData, unigramProbabilities)}\n")
 
 	# print("Getting Test Data Set Up")
-	# getData(unigramCount, testData, isTest=True)
+	# getData(unigramCount, testData, type="test")
 	# print("Calculating Perplexity for Dev Data")
-	# print(f"Perplexity of Test Data for Unigram is: {getPerplexity(testData, unigramProbabilities)}\n")
+	# print(f"Perplexity of Test Data for Unigram is: {getUnigramPerplexity(testData, unigramProbabilities)}\n")
 	print("-------------------------------------------------------------")
 	print("Bigrams")
 	print("-------------------------------------------------------------")
@@ -74,20 +72,19 @@ if __name__ == "__main__":
 	print("Finding Bigrams in Training Data")
 	getNgrams(trainingData, bigramCount, 2)
 	print("Finding Probabilities in Training Data for all Bigrams")
-	# getProbability(bigramCount, bigramProbabilities)
-	print("Calculating Perplexity for Training Data\n") # get rid of new line once i figure out perplexity problem
-	# print(f"Perplexity of Training Data for Bigram is: {getPerplexity(trainingData, bigramProbabilities)}\n")
+	print("Calculating Perplexity for Training Data")
+	print(f"Perplexity of Training Data for Bigram is: {getBigramPerplexity(trainingData, bigramCount, unigramCount)}\n")
 
 	print("Getting Dev Data")
 	print("Calculating Perplexity for Dev Data")
 	try:
-		print(f"Perplexity of Dev Data for Bigram is: {getPerplexity(devData, bigramProbabilities)}\n")
+		print(f"Perplexity of Dev Data for Bigram is: {getBigramPerplexity(devData, bigramCount, unigramCount)}\n")
 	except:
 		print(f"Perplexity of Dev Data for Bigram is: {math.inf}\n")
 	
 	# print("Getting Test Data")
 	# print("Calculating Perplexity for Test Data")
-	# print(f"Perplexity of Test Data for Bigram is: {getPerplexity(testData, bigramProbabilities)}\n")
+	# print(f"Perplexity of Test Data for Bigram is: {getBigramPerplexity(testData, bigramCount, unigramCount)}\n")
 	
 	print("-------------------------------------------------------------")
 	print("Trigrams")
@@ -101,15 +98,15 @@ if __name__ == "__main__":
 	# getProbability(trigramCount, trigramProbabilities)
 
 	print("Calculating Perplexity for Training Data\n") # get rid of new line once i figure out perplexity problem
-	# print(f"Perplexity of Training Data for Trigram is: {getPerplexity(trainingData, trigramProbabilities)}\n")
+	# print(f"Perplexity of Training Data for Trigram is: {getTrigramPerplexity(trainingData, trigramCount, helperProbabilities=bigramCount)}\n")
 
 	print("Getting Dev Data Set Up")
 	print("Calculating Perplexity for Dev Data")
 	try:
-		print(f"Perplexity of Dev Data for Unigram is: {getPerplexity(devData, trigramProbabilities)}\n")
+		print(f"Perplexity of Dev Data for Unigram is: {getTrigramPerplexity(devData, trigramCount, helperProbabilities=bigramCount)}\n")
 	except:
 		print(f"Perplexity of Dev Data for Unigram is: {math.inf}\n")
 
 	# print("Getting Test Data")
 	# print("Calculating Perplexity for Test Data")
-	# print(f"Perplexity of Test Data for Trigram is: {getPerplexity(testData, trigramProbabilities)}\n")
+	# print(f"Perplexity of Test Data for Trigram is: {getPerplexity(testData, trigramCount, helperProbabilities=bigramCount)}\n")
