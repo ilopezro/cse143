@@ -105,7 +105,6 @@ def getNgrams(data, count, num):
 			ngram = [(sentenceArray[i], sentenceArray[i+1]) for i in range(len(sentenceArray)-1)]
 		if num == 3:
 			ngram = [(sentenceArray[i], sentenceArray[i+1], sentenceArray[i+2]) for i in range(len(sentenceArray)-2)]
-		print(ngram)
 		for gram in ngram:
 			if gram not in count:
 				count[gram] = 1
