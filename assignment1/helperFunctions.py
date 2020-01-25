@@ -4,7 +4,7 @@ import math
 # getUnigrams() will prefill UNIGRAMS and DELETED_KEYS to be used in 
 # Dev data. 
 # --------------------------------------------------------------------
-def getUnigrams(count, data, delKeys):
+def getUnigrams(count, delKeys):
 	trainingFile = open("./data/1b_benchmark.train.tokens", "r")
 
 	for sentence in trainingFile:
@@ -15,7 +15,6 @@ def getUnigrams(count, data, delKeys):
 				count[word] = 1
 			else:
 				count[word] += 1
-		data.append(" ".join(sentenceArray))
 	trainingFile.close()
 
 	count["UNK"] = 0
@@ -73,16 +72,23 @@ def getPerplexity(data, probabilities):
 # --------------------------------------------------------------------
 # getDevData() replaces every UNK token and adds it to DEV_DATA_ARRAY
 # --------------------------------------------------------------------
-def getDevData(count, array):
-	devData = open("./data/1b_benchmark.dev.tokens", "r")
-	for sentence in devData:
+def getData(count, array, type):
+	if type == "dev":
+		data = open("./data/1b_benchmark.dev.tokens", "r")
+	elif type == "test":
+		data = open("./data/1b_benchmark.test.tokens", "r")
+	else:
+		data = open("./data/1b_benchmark.train.tokens")
+
+	for sentence in data:
 		sentenceArray = sentence.split()
 		for word in sentenceArray:
 			if word not in count:
 				sentenceArray[sentenceArray.index(word)] = "UNK"
+		sentenceArray.insert(0, "<start>")
 		sentenceArray.append("<end>")
 		array.append(" ".join(sentenceArray))
-	devData.close()
+	data.close()
 
 # --------------------------------------------------------------------
 # addStartToken() prepares DATA_ARRAY to be used by Bigram and 
