@@ -54,15 +54,17 @@ def getProbability(count, probabilites):
 # getUnigramPerplexity() calculates perplexity for unigrams and 
 # returns the final perplexity
 # --------------------------------------------------------------------
-def getPerplexity(data, probabilities):
+def getUnigramPerplexity(data, probabilities):
 	runningSum = 0
 	biggerRunningSum = 0
 	wordCount = 0
 	for sentence in data:
 		sentenceArray = sentence.split()
 		for word in sentenceArray:
-			wordCount += 1
+			if word == "<start>":
+				continue
 			runningSum += math.log(probabilities[word], 2)
+			wordCount += 1
 		biggerRunningSum += runningSum
 		runningSum = 0
 	inverse = float(-1) / float(wordCount)
@@ -70,7 +72,45 @@ def getPerplexity(data, probabilities):
 	return math.pow(2, exponent)
 
 # --------------------------------------------------------------------
-# getDevData() replaces every UNK token and adds it to DEV_DATA_ARRAY
+# getBigramPerplexity() calculates perplexity for unigrams and 
+# returns the final perplexity
+# --------------------------------------------------------------------
+def getBigramPerplexity(data, probabilites, helperProbabilities):
+	runningSum = 0
+	biggerRunningSum = 0
+	sentenceLength = 0
+	for sentence in data:
+		sentenceArray = sentence.split()
+		ngram = [(sentenceArray[i], sentenceArray[i+1]) for i in range(len(sentenceArray)-1)]
+		for gram in ngram:
+			runningSum += math.log(getBigramProbability(gram, probabilites, helperProbabilities), 2)
+		biggerRunningSum += runningSum
+		runningSum = 0
+		sentenceLength += len(sentenceArray) - 1
+	inverse = float(-1) / float(sentenceLength)
+	exponent = inverse * biggerRunningSum; 
+	return math.pow(2, exponent)
+			
+
+# --------------------------------------------------------------------
+# getBigramProbability() gets bigram probability
+# --------------------------------------------------------------------
+def getBigramProbability(bigram, probabilites, helperProbabilities):
+	probabilityOfBigram = probabilites[bigram]
+	if bigram[0] == "<start>":
+		probabilityOfHistory = 1
+	else: 
+		probabilityOfHistory = helperProbabilities[bigram[1]]
+	return float(probabilityOfBigram)/float(probabilityOfHistory)
+
+# --------------------------------------------------------------------
+# getTrigramProbability() gets bigram probability
+# --------------------------------------------------------------------
+def getTrigramProbability(bigram, probabilites, helperProbabilities):
+	print("in trigram probabiloty")
+
+# --------------------------------------------------------------------
+# getData() replaces every UNK token and adds it to DEV_DATA_ARRAY
 # --------------------------------------------------------------------
 def getData(count, array, type):
 	if type == "dev":
