@@ -70,6 +70,8 @@ def getBigramPerplexity(data, probabilites, helperProbabilities):
 		sentenceArray = sentence.split()
 		ngram = [(sentenceArray[i], sentenceArray[i+1]) for i in range(len(sentenceArray)-1)]
 		for gram in ngram:
+			if (gram[0] == "<start>" and gram[1] == "<start>"):
+				continue
 			runningSum += math.log(getBigramProbability(gram, probabilites, helperProbabilities), 2)
 		biggerRunningSum += runningSum
 		runningSum = 0
@@ -85,8 +87,8 @@ def getBigramPerplexity(data, probabilites, helperProbabilities):
 def getBigramProbability(bigram, probabilites, helperProbabilities):
 	try:
 		probabilityOfBigram = probabilites[bigram]
-		if bigram[0] == "<start>":
-			probabilityOfHistory = 1
+		if bigram[0] == "<start>" :
+			probabilityOfHistory = helperProbabilities[bigram[1]]
 		else: 
 			probabilityOfHistory = helperProbabilities[bigram[0]]
 		return float(probabilityOfBigram)/float(probabilityOfHistory)
@@ -119,8 +121,8 @@ def getTrigramPerplexity(data, probabilites, helperProbabilities):
 def getTrigramProbability(trigram, probabilites, helperProbabilities):
 	try: 
 		probabilityOfTrigram = probabilites[trigram]
-		if trigram[0] == "<start>":
-			probabilityOfHistory = 1
+		if trigram[0] == "<start>" and trigram[1] == "<start>":
+			probabilityOfHistory = helperProbabilities[trigram[1:3]]
 		else: 
 			probabilityOfHistory = helperProbabilities[trigram[0:2]]
 		return float(probabilityOfTrigram)/float(probabilityOfHistory)
@@ -142,8 +144,10 @@ def getTrigramSmoothing(data, probabilities, helperProbabilities, unigramCount, 
 			runningMiniSum = 0
 			runningMiniSum += lambdas[2] * (getTrigramProbability(gram, probabilities, helperProbabilities))
 			runningMiniSum += lambdas[1] * (getBigramProbability(gram[0:2], helperProbabilities, unigramCount))
-			if gram[0] == "<start>":
-				numerator = 1
+			if gram[0] == "<start>" and gram[1] == "<start>":
+				numerator = unigramCount[gram[2]]
+			elif gram[0] == "<start>":
+				numerator = unigramCount[gram[1]]
 			else:
 				numerator = unigramCount[gram[0]]
 			runningMiniSum += lambdas[0] * float(numerator/sum(unigramCount.values()))
@@ -171,6 +175,7 @@ def getData(count, array, type):
 		for word in sentenceArray:
 			if word not in count:
 				sentenceArray[sentenceArray.index(word)] = "UNK"
+		sentenceArray.insert(0, "<start>")
 		sentenceArray.insert(0, "<start>")
 		sentenceArray.append("<end>")
 		array.append(" ".join(sentenceArray))
