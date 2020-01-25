@@ -50,8 +50,6 @@ def populateUnk(data, model):
 def getProbability(count, probabilites):
 	for key, value in count.items():
 		probabilites[key] = value/sum(count.values())
-		print(key)
-		print("in here")
 
 # --------------------------------------------------------------------
 # getUnigramPerplexity() calculates perplexity for unigrams and 
@@ -98,13 +96,17 @@ def addStartToken(data):
 		data[index] = " ".join(sentenceArray)
 
 # --------------------------------------------------------------------
-# getBigrams() prepares gets all bigrams available from trainingData
+# getNgrams() gets all n-grams available from data num >= 2
 # --------------------------------------------------------------------
-def getBigrams(data, count):
+def getNgrams(data, count, num):
 	for sentence in data:
 		sentenceArray = sentence.split()
-		bigram = [(sentenceArray[i], sentenceArray[i+1]) for i in range(len(sentenceArray)-1)]
-		for gram in bigram:
+		if num == 2:
+			ngram = [(sentenceArray[i], sentenceArray[i+1]) for i in range(len(sentenceArray)-1)]
+		if num == 3:
+			ngram = [(sentenceArray[i], sentenceArray[i+1], sentenceArray[i+2]) for i in range(len(sentenceArray)-2)]
+		print(ngram)
+		for gram in ngram:
 			if gram not in count:
 				count[gram] = 1
 			else:
