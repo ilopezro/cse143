@@ -100,14 +100,39 @@ def getBigramProbability(bigram, probabilites, helperProbabilities):
 	if bigram[0] == "<start>":
 		probabilityOfHistory = 1
 	else: 
-		probabilityOfHistory = helperProbabilities[bigram[1]]
+		probabilityOfHistory = helperProbabilities[bigram[0]]
 	return float(probabilityOfBigram)/float(probabilityOfHistory)
 
 # --------------------------------------------------------------------
-# getTrigramProbability() gets bigram probability
+# getTrigramPerplexity() calculates perplexity for trigrams and 
+# returns the final perplexity
 # --------------------------------------------------------------------
-def getTrigramProbability(bigram, probabilites, helperProbabilities):
-	print("in trigram probabiloty")
+def getTrigramPerplexity(data, probabilites, helperProbabilities):
+	runningSum = 0
+	biggerRunningSum = 0
+	sentenceLength = 0
+	for sentence in data:
+		sentenceArray = sentence.split()
+		ngram = [(sentenceArray[i], sentenceArray[i+1], sentenceArray[i+2]) for i in range(len(sentenceArray)-2)]
+		for gram in ngram:
+			runningSum += math.log(getTrigramProbability(gram, probabilites, helperProbabilities), 2)
+		biggerRunningSum += runningSum
+		runningSum = 0
+		sentenceLength += len(sentenceArray) - 1
+	inverse = float(-1) / float(sentenceLength)
+	exponent = inverse * biggerRunningSum; 
+	return math.pow(2, exponent)
+
+# --------------------------------------------------------------------
+# getTrigramProbability() gets trigram probability
+# --------------------------------------------------------------------
+def getTrigramProbability(trigram, probabilites, helperProbabilities):
+	probabilityOfTrigram = probabilites[trigram]
+	if trigram[0] == "<start>":
+		probabilityOfHistory = 1
+	else: 
+		probabilityOfHistory = helperProbabilities[trigram[0:2]]
+	return float(probabilityOfTrigram)/float(probabilityOfHistory)
 
 # --------------------------------------------------------------------
 # getData() replaces every UNK token and adds it to DEV_DATA_ARRAY
