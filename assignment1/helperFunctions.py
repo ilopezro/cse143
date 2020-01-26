@@ -7,10 +7,10 @@
 # ilopezro
 #
 # Jennifer Dutra 
-# UCSCid - jrdutra
+# jrdutra
 #
 # Khang Tran
-# UCSCid
+# khvitran
 #
 # HelperFunctions.py contains all the functions needed assg1.py 
 # --------------------------------------------------------------------
@@ -76,7 +76,7 @@ def getUnigramPerplexity(data, probabilities):
 		biggerRunningSum += runningSum
 		runningSum = 0
 	inverse = float(-1) / float(wordCount)
-	exponent = inverse * biggerRunningSum; 
+	exponent = inverse * biggerRunningSum 
 	return math.pow(2, exponent)
 
 # --------------------------------------------------------------------
@@ -98,7 +98,7 @@ def getBigramPerplexity(data, probabilites, helperProbabilities):
 		runningSum = 0
 		sentenceLength += len(sentenceArray) - 2
 	inverse = float(-1) / float(sentenceLength)
-	exponent = inverse * biggerRunningSum; 
+	exponent = inverse * biggerRunningSum 
 	return math.pow(2, exponent)
 			
 
@@ -130,7 +130,7 @@ def getTrigramPerplexity(data, probabilites, helperProbabilities, unigramCount):
 		runningSum = 0
 		sentenceLength += len(sentenceArray) - 2
 	inverse = float(-1) / float(sentenceLength)
-	exponent = inverse * biggerRunningSum; 
+	exponent = inverse * biggerRunningSum 
 	return math.pow(2, exponent)
 
 # --------------------------------------------------------------------
@@ -175,7 +175,7 @@ def getTrigramSmoothing(data, probabilities, helperProbabilities, unigramCount, 
 		runningSum = 0
 		sentenceLength += len(sentenceArray) - 2
 	inverse = float(-1) / float(sentenceLength)
-	exponent = inverse * biggerRunningSum; 
+	exponent = inverse * biggerRunningSum 
 	return math.pow(2, exponent)
 
 # --------------------------------------------------------------------
