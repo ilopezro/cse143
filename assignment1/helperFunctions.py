@@ -9,6 +9,7 @@ def getUnigrams(count, delKeys):
 
 	for sentence in trainingFile:
 		sentenceArray = sentence.split()
+		sentenceArray.insert(0, "<start>")
 		sentenceArray.append("<end>")
 		for word in sentenceArray:
 			if word not in count:
@@ -34,8 +35,12 @@ def getUnigrams(count, delKeys):
 # probabilites within Unigram 
 # --------------------------------------------------------------------
 def getProbability(count, probabilites):
+	sumOfTotalStarts = count["<start>"]
+	totalTokensWOStart = sum(count.values()) - sumOfTotalStarts
 	for key, value in count.items():
-		probabilites[key] = value/sum(count.values())
+		if key == "<start>":
+			continue
+		probabilites[key] = value/totalTokensWOStart
 
 # --------------------------------------------------------------------
 # getUnigramPerplexity() calculates perplexity for unigrams and 
@@ -75,7 +80,7 @@ def getBigramPerplexity(data, probabilites, helperProbabilities):
 			runningSum += math.log(getBigramProbability(gram, probabilites, helperProbabilities), 2)
 		biggerRunningSum += runningSum
 		runningSum = 0
-		sentenceLength += len(sentenceArray) - 1
+		sentenceLength += len(sentenceArray) - 2
 	inverse = float(-1) / float(sentenceLength)
 	exponent = inverse * biggerRunningSum; 
 	return math.pow(2, exponent)
@@ -87,10 +92,7 @@ def getBigramPerplexity(data, probabilites, helperProbabilities):
 def getBigramProbability(bigram, probabilites, helperProbabilities):
 	try:
 		probabilityOfBigram = probabilites[bigram]
-		if bigram[0] == "<start>" :
-			probabilityOfHistory = helperProbabilities[bigram[1]]
-		else: 
-			probabilityOfHistory = helperProbabilities[bigram[0]]
+		probabilityOfHistory = helperProbabilities[bigram[0]]
 		return float(probabilityOfBigram)/float(probabilityOfHistory)
 	except:
 		return 0
@@ -99,7 +101,7 @@ def getBigramProbability(bigram, probabilites, helperProbabilities):
 # getTrigramPerplexity() calculates perplexity for trigrams and 
 # returns the final perplexity
 # --------------------------------------------------------------------
-def getTrigramPerplexity(data, probabilites, helperProbabilities):
+def getTrigramPerplexity(data, probabilites, helperProbabilities, unigramCount):
 	runningSum = 0
 	biggerRunningSum = 0
 	sentenceLength = 0
@@ -107,10 +109,10 @@ def getTrigramPerplexity(data, probabilites, helperProbabilities):
 		sentenceArray = sentence.split()
 		ngram = [(sentenceArray[i], sentenceArray[i+1], sentenceArray[i+2]) for i in range(len(sentenceArray)-2)]
 		for gram in ngram:
-			runningSum += math.log(getTrigramProbability(gram, probabilites, helperProbabilities), 2)
+			runningSum += math.log(getTrigramProbability(gram, probabilites, helperProbabilities, unigramCount), 2)
 		biggerRunningSum += runningSum
 		runningSum = 0
-		sentenceLength += len(sentenceArray) - 1
+		sentenceLength += len(sentenceArray) - 2
 	inverse = float(-1) / float(sentenceLength)
 	exponent = inverse * biggerRunningSum; 
 	return math.pow(2, exponent)
@@ -118,11 +120,11 @@ def getTrigramPerplexity(data, probabilites, helperProbabilities):
 # --------------------------------------------------------------------
 # getTrigramProbability() gets trigram probability
 # --------------------------------------------------------------------
-def getTrigramProbability(trigram, probabilites, helperProbabilities):
+def getTrigramProbability(trigram, probabilites, helperProbabilities, unigramCount):
 	try: 
 		probabilityOfTrigram = probabilites[trigram]
 		if trigram[0] == "<start>" and trigram[1] == "<start>":
-			probabilityOfHistory = helperProbabilities[trigram[1:3]]
+			probabilityOfHistory = unigramCount["<start>"]
 		else: 
 			probabilityOfHistory = helperProbabilities[trigram[0:2]]
 		return float(probabilityOfTrigram)/float(probabilityOfHistory)
@@ -137,24 +139,25 @@ def getTrigramSmoothing(data, probabilities, helperProbabilities, unigramCount, 
 	runningSum = 0
 	biggerRunningSum = 0
 	sentenceLength = 0
+	startTokens = unigramCount["<start>"]
+	totalTokensWOStart = sum(unigramCount.values()) - startTokens
 	for sentence in data:
 		sentenceArray = sentence.split()
 		ngram = [(sentenceArray[i], sentenceArray[i+1], sentenceArray[i+2]) for i in range(len(sentenceArray)-2)]
 		for gram in ngram:
 			runningMiniSum = 0
-			runningMiniSum += lambdas[2] * (getTrigramProbability(gram, probabilities, helperProbabilities))
-			runningMiniSum += lambdas[1] * (getBigramProbability(gram[0:2], helperProbabilities, unigramCount))
 			if gram[0] == "<start>" and gram[1] == "<start>":
-				numerator = unigramCount[gram[2]]
-			elif gram[0] == "<start>":
-				numerator = unigramCount[gram[1]]
+				runningMiniSum += lambdas[2] * (getTrigramProbability(gram, probabilities, helperProbabilities, unigramCount))
+				runningMiniSum += lambdas[1] * (getBigramProbability(gram[1:3], helperProbabilities, unigramCount))
+				runningMiniSum += lambdas[0] * float(unigramCount[gram[2]]/totalTokensWOStart)
 			else:
-				numerator = unigramCount[gram[0]]
-			runningMiniSum += lambdas[0] * float(numerator/sum(unigramCount.values()))
+				runningMiniSum += lambdas[2] * (getTrigramProbability(gram, probabilities, helperProbabilities, unigramCount))
+				runningMiniSum += lambdas[1] * (getBigramProbability(gram[1:3], helperProbabilities, unigramCount))
+				runningMiniSum += lambdas[0] * float(unigramCount[gram[2]]/totalTokensWOStart)
 			runningSum += math.log(runningMiniSum, 2)
 		biggerRunningSum += runningSum
 		runningSum = 0
-		sentenceLength += len(sentenceArray) - 1
+		sentenceLength += len(sentenceArray) - 2
 	inverse = float(-1) / float(sentenceLength)
 	exponent = inverse * biggerRunningSum; 
 	return math.pow(2, exponent)
