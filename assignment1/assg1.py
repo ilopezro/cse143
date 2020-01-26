@@ -126,5 +126,5 @@ if __name__ == "__main__":
 	# except:
 	# 	print(f"Perplexity of Test Data for Trigram is: {math.inf}\n")
 	# print("Calculating Perplexity for Test Data Using SMOOTHING")
-	# lambdas = []
+	# lambdas=[.3, .3, .4]
 	# print(f"Perplexity using smoothing on Test Data with lambda1: {lambdas[0]}, lambda2: {lambdas[1]}, and lambda3: {lambdas[2]}, is: {getTrigramSmoothing(devData, trigramCount, bigramCount, unigramCount, lambdas)}")
