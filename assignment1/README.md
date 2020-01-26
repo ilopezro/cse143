@@ -13,6 +13,9 @@
 
 ## How to Run Code
 
+Run following command in this directory in your terminal
+``` python3 assg1.py ``` 
+
 ## References 
 
 * [Generating N-Grams](http://www.albertauyeung.com/post/generating-ngrams-python/)
