@@ -6,8 +6,14 @@
 # Isai Lopez Rodas
 # ilopezro
 #
-# Homework Partners:
-# Jennifer Dutra and Khang Tran
+# Jennifer Dutra 
+# UCSCid
+#
+# Khang Tran
+# UCSCid
+#
+# assg1.py contains main code  
+#
 # --------------------------------------------------------------------
 
 import math
@@ -16,21 +22,24 @@ from helperFunctions import getUnigrams, getUnigramPerplexity, getProbability, g
 # --------------------------------------------------------------------
 # Variables
 #
-# unigramCount holds the dictionary of all tokens in test data and 
+# unigramCount holds the dictionary of all tokens in train data and 
 # number of times they appear { token: numAppearances }
 #
 # unigramProbabilities holds the probabilities of the unigrams 
 # 
-# bigramCount holds the dictionary of all tokens in test data and 
+# bigramCount holds the dictionary of all tokens in train data and 
 # number of times they appear { token: numAppearances }
 #
-# bigramProbabilities holds the probabilities of the unigrams 
+# trigramCount holds the dictionary of all tokens in train data and 
+# number of times they appear { token: numAppearances }
 #
 # deletedKeys is a list of all UNK keys
 # 
 # trainingData holds a list of all the sentences for training data
 #
 # devData holds a list of all sentences from dev data
+#
+# testData holds a list of all sentences in test data
 # --------------------------------------------------------------------
 
 if __name__ == "__main__":

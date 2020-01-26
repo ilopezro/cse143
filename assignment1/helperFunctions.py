@@ -1,8 +1,24 @@
+# --------------------------------------------------------------------
+# CSE 143 Assignment #1 
+# 1.21.2020
+# Professor Jeffrey Flanigan
+#
+# Isai Lopez Rodas
+# ilopezro
+#
+# Jennifer Dutra 
+# UCSCid
+#
+# Khang Tran
+# UCSCid
+#
+# HelperFunctions.py contains all the functions needed assg1.py 
+# --------------------------------------------------------------------
+
 import math
 
 # --------------------------------------------------------------------
-# getUnigrams() will prefill UNIGRAMS and DELETED_KEYS to be used in 
-# Dev data. 
+# getUnigrams() will return all unigrams and deleted keys
 # --------------------------------------------------------------------
 def getUnigrams(count, delKeys):
 	trainingFile = open("./data/1b_benchmark.train.tokens", "r")
@@ -64,7 +80,7 @@ def getUnigramPerplexity(data, probabilities):
 	return math.pow(2, exponent)
 
 # --------------------------------------------------------------------
-# getBigramPerplexity() calculates perplexity for unigrams and 
+# getBigramPerplexity() calculates perplexity for bigrams and 
 # returns the final perplexity
 # --------------------------------------------------------------------
 def getBigramPerplexity(data, probabilites, helperProbabilities):
@@ -163,7 +179,7 @@ def getTrigramSmoothing(data, probabilities, helperProbabilities, unigramCount, 
 	return math.pow(2, exponent)
 
 # --------------------------------------------------------------------
-# getData() replaces every UNK token and adds it to DEV_DATA_ARRAY
+# getData() replaces every UNK token and adds it to given array
 # --------------------------------------------------------------------
 def getData(count, array, type):
 	if type == "dev":
