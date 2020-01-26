@@ -72,10 +72,10 @@ if __name__ == "__main__":
 	print("Calculating Perplexity for Dev Data")
 	print(f"Perplexity of Dev Data for Unigram is: {getUnigramPerplexity(devData, unigramProbabilities)}\n")
 
-	# print("Getting Test Data Set Up")
-	# getData(unigramCount, testData, type="test")
-	# print("Calculating Perplexity for Dev Data")
-	# print(f"Perplexity of Test Data for Unigram is: {getUnigramPerplexity(testData, unigramProbabilities)}\n")
+	print("Getting Test Data Set Up")
+	getData(unigramCount, testData, type="test")
+	print("Calculating Perplexity for Dev Data")
+	print(f"Perplexity of Test Data for Unigram is: {getUnigramPerplexity(testData, unigramProbabilities)}\n")
 
 	print("-------------------------------------------------------------")
 	print("Bigrams")
@@ -94,12 +94,12 @@ if __name__ == "__main__":
 	except:
 		print(f"Perplexity of Dev Data for Bigram is: {math.inf}\n")
 	
-	# print("Getting Test Data")
-	# print("Calculating Perplexity for Test Data")
-	# try:
-	# 	print(f"Perplexity of Test Data for Bigram is: {getBigramPerplexity(testData, bigramCount, unigramCount)}\n")
-	# except:
-	# 	print(f"Perplexity of Test Data for Bigram is: {math.inf}\n")
+	print("Getting Test Data")
+	print("Calculating Perplexity for Test Data")
+	try:
+		print(f"Perplexity of Test Data for Bigram is: {getBigramPerplexity(testData, bigramCount, unigramCount)}\n")
+	except:
+		print(f"Perplexity of Test Data for Bigram is: {math.inf}\n")
 	
 	print("-------------------------------------------------------------")
 	print("Trigrams")
@@ -129,14 +129,14 @@ if __name__ == "__main__":
 	lambdas=[.1, .1, .8]
 	print(f"Perplexity using smoothing with lambda1: {lambdas[0]}, lambda2: {lambdas[1]}, and lambda3: {lambdas[2]}, is: {getTrigramSmoothing(devData, trigramCount, bigramCount, unigramCount, lambdas)}")
 	lambdas=[.8, .1, .1]
-	print(f"Perplexity using smoothing with lambda1: {lambdas[0]}, lambda2: {lambdas[1]}, and lambda3: {lambdas[2]}, is: {getTrigramSmoothing(devData, trigramCount, bigramCount, unigramCount, lambdas)}")
+	print(f"Perplexity using smoothing with lambda1: {lambdas[0]}, lambda2: {lambdas[1]}, and lambda3: {lambdas[2]}, is: {getTrigramSmoothing(devData, trigramCount, bigramCount, unigramCount, lambdas)}\n")
 	
-	# print("Getting Test Data")
-	# print("Calculating Perplexity for Test Data No Smoothing")
-	# try: 
-	# 	print(f"Perplexity of Test Data for Trigram is: {getTrigramPerplexity(testData, trigramCount, bigramCount, unigramCount)}\n")
-	# except:
-	# 	print(f"Perplexity of Test Data for Trigram is: {math.inf}\n")
-	# print("Calculating Perplexity for Test Data Using SMOOTHING")
-	# lambdas=[.3, .3, .4]
-	# print(f"Perplexity using smoothing on Test Data with lambda1: {lambdas[0]}, lambda2: {lambdas[1]}, and lambda3: {lambdas[2]}, is: {getTrigramSmoothing(devData, trigramCount, bigramCount, unigramCount, lambdas)}")
+	print("Getting Test Data")
+	print("Calculating Perplexity for Test Data No Smoothing")
+	try: 
+		print(f"Perplexity of Test Data for Trigram is: {getTrigramPerplexity(testData, trigramCount, bigramCount, unigramCount)}\n")
+	except:
+		print(f"Perplexity of Test Data for Trigram is: {math.inf}\n")
+	print("Calculating Perplexity for Test Data Using SMOOTHING")
+	lambdas=[.3, .3, .4]
+	print(f"Perplexity using smoothing on Test Data with lambda1: {lambdas[0]}, lambda2: {lambdas[1]}, and lambda3: {lambdas[2]}, is: {getTrigramSmoothing(testData, trigramCount, bigramCount, unigramCount, lambdas)}")
