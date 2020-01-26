@@ -87,7 +87,10 @@ if __name__ == "__main__":
 	
 	# print("Getting Test Data")
 	# print("Calculating Perplexity for Test Data")
-	# print(f"Perplexity of Test Data for Bigram is: {getBigramPerplexity(testData, bigramCount, unigramCount)}\n")
+	# try:
+	# 	print(f"Perplexity of Test Data for Bigram is: {getBigramPerplexity(testData, bigramCount, unigramCount)}\n")
+	# except:
+	# 	print(f"Perplexity of Test Data for Bigram is: {math.inf}\n")
 	
 	print("-------------------------------------------------------------")
 	print("Trigrams")
