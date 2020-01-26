@@ -43,7 +43,7 @@ if __name__ == "__main__":
 	trainingData = []
 	devData = []
 	testData = []
-
+ 
 	print("-------------------------------------------------------------")
 	print("Unigrams")
 	print("-------------------------------------------------------------")
@@ -58,6 +58,7 @@ if __name__ == "__main__":
 
 	print("Getting Dev Data Set Up")
 	getData(unigramCount, devData, type="dev")
+	# DEBUG ONLY - getData(unigramCount, devData, type="debug")
 	print("Calculating Perplexity for Dev Data")
 	print(f"Perplexity of Dev Data for Unigram is: {getUnigramPerplexity(devData, unigramProbabilities)}\n")
 

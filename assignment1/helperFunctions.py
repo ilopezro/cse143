@@ -167,6 +167,8 @@ def getData(count, array, type):
 		data = open("./data/1b_benchmark.dev.tokens", "r")
 	elif type == "test":
 		data = open("./data/1b_benchmark.test.tokens", "r")
+	elif type == "debug":
+		data = open("./data/debug_test.tokens", "r")
 	else:
 		data = open("./data/1b_benchmark.train.tokens")
 
