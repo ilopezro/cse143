@@ -22,6 +22,8 @@ import math
 # --------------------------------------------------------------------
 def getUnigrams(count, delKeys):
 	trainingFile = open("./data/1b_benchmark.train.tokens", "r")
+	# for testing purposes
+	# trainingFile = open("./data/half_train.tokens", "r")
 
 	for sentence in trainingFile:
 		sentenceArray = sentence.split()
@@ -37,6 +39,7 @@ def getUnigrams(count, delKeys):
 	count["UNK"] = 0
 
 	for key, value in count.items():
+		# run value < 5 and value < 2 for testing purposes (originally value < 3)
 		if value < 3:
 			delKeys.append(key)
 			count["UNK"] += value
@@ -188,6 +191,8 @@ def getData(count, array, type):
 		data = open("./data/1b_benchmark.test.tokens", "r")
 	elif type == "debug":
 		data = open("./data/debug_test.tokens", "r")
+	# elif type == "half":
+	# 	data = open("./data/half_train.tokens", "r")
 	else:
 		data = open("./data/1b_benchmark.train.tokens")
 
