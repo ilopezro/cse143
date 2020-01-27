@@ -13,8 +13,13 @@
 
 ## How to Run Code
 
-Run following command in this directory in your terminal
+Run following command in this directory in your terminal <br/>
 ``` python3 assg1.py ``` 
+
+## Team Members
+1. Jennifer Dutra 
+1. Khang Tran 
+1. Isai Lopez Rodas
 
 ## References 
 
